@@ -5,13 +5,13 @@ This allows you to determine the region of the latent space that reflects your s
 ## Prerequisite
 This extension need to apply cfg_denoised_callback-ea9bd9fc.patch (as of Feb 5, 2023 origin/HEAD commit ea9bd9fc).
 ```
-git apply extensions/stable-diffusion-webui-two-shot/cfg_denoised_callback-ea9bd9fc.patch
+git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/cfg_denoised_callback-ea9bd9fc.patch
 ```
 
 ## How to use
 todo
 
-If you want to disable the effect of this extension without uninstalling it, set the end of the step to 0.
+If you want to disable the effect of this extension without uninstalling it, set the end at step to 0.
 
 ## Extra generation params
 Extra generation params provided by this extension are saved as PNG Info in the output file.
