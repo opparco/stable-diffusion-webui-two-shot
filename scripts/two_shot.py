@@ -68,7 +68,7 @@ class Script(scripts.Script):
 
     def denoised_callback(self, params: CFGDenoisedParams):
 
-        if params.sampling_step <= self.end_at_step:
+        if params.sampling_step < self.end_at_step:
 
             x = params.x
             # x.shape = [batch_size, C, H // 8, W // 8]
@@ -144,11 +144,11 @@ class Script(scripts.Script):
             Filter(division, position, weight) for division, position, weight in zip(divisions, positions, weights)
         ]
 
-        self.end_at_step = raw_end_at_step - 1
+        self.end_at_step = raw_end_at_step
 
         #
 
-        if self.end_at_step != -1:
+        if self.end_at_step != 0:
             p.extra_generation_params["Latent Couple"] = f"divisions={raw_divisions} positions={raw_positions} weights={raw_weights} end at step={raw_end_at_step}"
             # save params into the output file as PNG textual data.
 
