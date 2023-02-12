@@ -68,7 +68,7 @@ class Script(scripts.Script):
 
     def denoised_callback(self, params: CFGDenoisedParams):
 
-        if params.sampling_step <= self.end_at_step - 1:
+        if params.sampling_step <= self.end_at_step:
 
             x = params.x
             # x.shape = [batch_size, C, H // 8, W // 8]
@@ -144,7 +144,7 @@ class Script(scripts.Script):
             Filter(division, position, weight) for division, position, weight in zip(divisions, positions, weights)
         ]
 
-        self.end_at_step = raw_end_at_step
+        self.end_at_step = raw_end_at_step - 1
 
         #
 
