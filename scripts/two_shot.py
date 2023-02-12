@@ -68,7 +68,7 @@ class Script(scripts.Script):
 
     def denoised_callback(self, params: CFGDenoisedParams):
 
-        if params.sampling_step <= self.end_at_step:
+        if params.sampling_step <= self.end_at_step - 1:
 
             x = params.x
             # x.shape = [batch_size, C, H // 8, W // 8]
