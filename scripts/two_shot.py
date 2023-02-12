@@ -148,7 +148,7 @@ class Script(scripts.Script):
 
         #
 
-        if self.end_at_step != 0:
+        if self.end_at_step != -1:
             p.extra_generation_params["Latent Couple"] = f"divisions={raw_divisions} positions={raw_positions} weights={raw_weights} end at step={raw_end_at_step}"
             # save params into the output file as PNG textual data.
 
