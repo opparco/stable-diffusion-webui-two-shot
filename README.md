@@ -9,7 +9,7 @@ git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/cfg_den
 ```
 
 ## How to use
-todo
+![20230213.png](./screenshots/20230213.png)
 
 ### Enabled
 The effect of Latent Couple appears only when Enabled is checked.
