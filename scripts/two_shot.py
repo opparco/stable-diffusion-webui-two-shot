@@ -90,7 +90,7 @@ class Script(scripts.Script):
                 continue
             raw_params[pair[0]] = pair[1]
 
-        return raw_params['divisions'], raw_params['positions'], raw_params['weights'], raw_params['step']
+        return raw_params['divisions'], raw_params['positions'], raw_params['weights'], int(raw_params['step'])
 
     def ui(self, is_img2img):
         id_part = "img2img" if is_img2img else "txt2img"
