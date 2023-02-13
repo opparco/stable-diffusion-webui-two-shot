@@ -97,6 +97,7 @@ class Script(scripts.Script):
 
         with gr.Group():
             with gr.Accordion("Latent Couple", open=False):
+                enabled = gr.Checkbox(value=False, label="Enabled")
                 with gr.Row():
                     divisions = gr.Textbox(label="Divisions", elem_id=f"cd_{id_part}_divisions", value="1:1,1:2,1:2")
                     positions = gr.Textbox(label="Positions", elem_id=f"cd_{id_part}_positions", value="0:0,0:0,0:1")
@@ -117,11 +118,11 @@ class Script(scripts.Script):
         self.infotext_fields = [
             (extra_generation_params, "Latent Couple")
         ]
-        return divisions, positions, weights, end_at_step
+        return enabled, divisions, positions, weights, end_at_step
 
     def denoised_callback(self, params: CFGDenoisedParams):
 
-        if params.sampling_step < self.end_at_step:
+        if self.enabled and params.sampling_step < self.end_at_step:
 
             x = params.x
             # x.shape = [batch_size, C, H // 8, W // 8]
@@ -170,7 +171,12 @@ class Script(scripts.Script):
 
                 uncond_off += 1
 
-    def process(self, p: StableDiffusionProcessing, raw_divisions: str, raw_positions: str, raw_weights: str, raw_end_at_step: int):
+    def process(self, p: StableDiffusionProcessing, enabled: bool, raw_divisions: str, raw_positions: str, raw_weights: str, raw_end_at_step: int):
+
+        self.enabled = enabled
+
+        if not self.enabled:
+            return
 
         self.num_batches = p.batch_size
 
