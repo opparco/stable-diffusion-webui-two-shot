@@ -52,7 +52,7 @@ class Script(scripts.Script):
     def show(self, is_img2img):
         return scripts.AlwaysVisible
 
-    def create_filters_from_ui_params(self, raw_divisions, raw_positions, raw_weights):
+    def create_filters_from_ui_params(self, raw_divisions: str, raw_positions: str, raw_weights: str):
 
         divisions = []
         for division in raw_divisions.split(','):
@@ -72,11 +72,25 @@ class Script(scripts.Script):
 
         return [Filter(division, position, weight) for division, position, weight in zip(divisions, positions, weights)]
 
-    def do_visualize(self, raw_divisions, raw_positions, raw_weights):
+    def do_visualize(self, raw_divisions: str, raw_positions: str, raw_weights: str):
 
         self.filters = self.create_filters_from_ui_params(raw_divisions, raw_positions, raw_weights)
 
         return [f.create_tensor(1, 128, 128).squeeze(dim=0).cpu().numpy() for f in self.filters]
+
+    def do_apply(self, extra_generation_params: str):
+        #
+        # parse "Latent Couple" extra_generation_params
+        #
+        raw_params = {}
+
+        for assignment in extra_generation_params.split(' '):
+            pair = assignment.split('=', 1)
+            if len(pair) != 2:
+                continue
+            raw_params[pair[0]] = pair[1]
+
+        return raw_params['divisions'], raw_params['positions'], raw_params['weights'], raw_params['step']
 
     def ui(self, is_img2img):
         id_part = "img2img" if is_img2img else "txt2img"
@@ -95,6 +109,14 @@ class Script(scripts.Script):
 
                 visualize_button.click(fn=self.do_visualize, inputs=[divisions, positions, weights], outputs=[visual_regions])
 
+                extra_generation_params = gr.Textbox(label="Extra generation params")
+                apply_button = gr.Button(value="Apply")
+
+                apply_button.click(fn=self.do_apply, inputs=[extra_generation_params], outputs=[divisions, positions, weights, end_at_step])
+
+        self.infotext_fields = [
+            (extra_generation_params, "Latent Couple")
+        ]
         return divisions, positions, weights, end_at_step
 
     def denoised_callback(self, params: CFGDenoisedParams):
