@@ -52,6 +52,32 @@ class Script(scripts.Script):
     def show(self, is_img2img):
         return scripts.AlwaysVisible
 
+    def create_filters_from_ui_params(self, raw_divisions, raw_positions, raw_weights):
+
+        divisions = []
+        for division in raw_divisions.split(','):
+            y, x = division.split(':')
+            divisions.append((int(y), int(x)))
+
+        positions = []
+        for position in raw_positions.split(','):
+            y, x = position.split(':')
+            positions.append((int(y), int(x)))
+
+        weights = []
+        for w in raw_weights.split(','):
+            weights.append(float(w))
+
+        # todo: assert len
+
+        return [Filter(division, position, weight) for division, position, weight in zip(divisions, positions, weights)]
+
+    def do_visualize(self, raw_divisions, raw_positions, raw_weights):
+
+        self.filters = self.create_filters_from_ui_params(raw_divisions, raw_positions, raw_weights)
+
+        return [f.create_tensor(1, 128, 128).squeeze(dim=0).cpu().numpy() for f in self.filters]
+
     def ui(self, is_img2img):
         id_part = "img2img" if is_img2img else "txt2img"
 
@@ -63,6 +89,11 @@ class Script(scripts.Script):
                 with gr.Row():
                     weights = gr.Textbox(label="Weights", elem_id=f"cd_{id_part}_weights", value="0.2,0.8,0.8")
                     end_at_step = gr.Slider(minimum=0, maximum=150, step=1, label="end at this step", elem_id=f"cd_{id_part}_end_at_this_step", value=20)
+
+                visualize_button = gr.Button(value="Visualize")
+                visual_regions = gr.Gallery(label="Regions").style(grid=(4, 4, 4, 8), height="auto")
+
+                visualize_button.click(fn=self.do_visualize, inputs=[divisions, positions, weights], outputs=[visual_regions])
 
         return divisions, positions, weights, end_at_step
 
@@ -121,28 +152,7 @@ class Script(scripts.Script):
 
         self.num_batches = p.batch_size
 
-        #
-        # ui params
-        #
-        divisions = []
-        for division in raw_divisions.split(','):
-            y, x = division.split(':')
-            divisions.append((int(y), int(x)))
-
-        positions = []
-        for position in raw_positions.split(','):
-            y, x = position.split(':')
-            positions.append((int(y), int(x)))
-
-        weights = []
-        for w in raw_weights.split(','):
-            weights.append(float(w))
-
-        # todo: assert len
-
-        self.filters = [
-            Filter(division, position, weight) for division, position, weight in zip(divisions, positions, weights)
-        ]
+        self.filters = self.create_filters_from_ui_params(raw_divisions, raw_positions, raw_weights)
 
         self.end_at_step = raw_end_at_step
 
