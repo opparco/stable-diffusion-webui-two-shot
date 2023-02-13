@@ -11,7 +11,15 @@ git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/cfg_den
 ## How to use
 todo
 
-If you want to disable the effect of this extension without uninstalling it, set the end at step to 0.
+### Enabled
+The effect of Latent Couple appears only when Enabled is checked.
+
+### Visualize button and Regions
+Press the Visualize button and you will get an image grid that visualizes the regions represented by the parameters.
+
+### Extra generation params and Apply button
+When you press the Send to button in PNG Info, the parameters of the saved Latent Couple are set to Extra generation params.
+Press the Apply button to actually apply the parameters.
 
 ## Extra generation params
 Extra generation params provided by this extension are saved as PNG Info in the output file.
