@@ -14,6 +14,12 @@ git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/cfg_den
 ### Enabled
 The effect of Latent Couple appears only when Enabled is checked.
 
+### Divisions, Positions, and Weights
+Regions are created based on these parameters.
+
+### end at this step
+The processing of Latent Couple is performed until the specified step is reached.
+
 ### Visualize button and Regions
 Press the Visualize button and you will get an image grid that visualizes the regions represented by the parameters.
 
