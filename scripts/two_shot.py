@@ -21,19 +21,19 @@ class Filter:
         self.position = position
         self.weight = weight
 
-    def create_tensor(self, num_channels: int, height_b: int, width_b: int) -> torch.Tensor:
+    def create_tensor(self, num_channels: int, height_b: float, width_b: float) -> torch.Tensor:
 
         x = torch.zeros(num_channels, height_b, width_b).to(devices.device)
 
         dy, dx = self.division
         py, px = self.position
 
-        division_height = height_b // dy
-        division_width = width_b // dx
-        y1 = division_height * py
-        x1 = division_width * px
+        division_height = height_b / dy
+        division_width = width_b / dx
+        y1 = int(division_height * py)
+        x1 = int(division_width * px)
 
-        x[:, y1:y1 + division_height, x1:x1 + division_width] = self.weight
+        x[:, y1:y1 + int(division_height), x1:x1 + int(division_width)] = self.weight
 
         return x
 
@@ -57,12 +57,12 @@ class Script(scripts.Script):
         divisions = []
         for division in raw_divisions.split(','):
             y, x = division.split(':')
-            divisions.append((int(y), int(x)))
+            divisions.append((float(y), float(x)))
 
         positions = []
         for position in raw_positions.split(','):
             y, x = position.split(':')
-            positions.append((int(y), int(x)))
+            positions.append((float(y), float(x)))
 
         weights = []
         for w in raw_weights.split(','):
