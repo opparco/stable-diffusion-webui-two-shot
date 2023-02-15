@@ -1,4 +1,5 @@
 from typing import List
+import typing
 
 import torch
 
@@ -16,7 +17,7 @@ from modules.processing import StableDiffusionProcessing
 
 class Filter:
 
-    def __init__(self, division: (int, int), position: (int, int), weight: float):
+    def __init__(self, division: typing.Tuple[float, float], position: typing.Tuple[float, float, float, float], weight: float):
         self.division = division
         self.position = position
         self.weight = weight
@@ -26,14 +27,16 @@ class Filter:
         x = torch.zeros(num_channels, height_b, width_b).to(devices.device)
 
         dy, dx = self.division
-        py, px = self.position
+        py, px, pey, pex = self.position
 
         division_height = height_b / dy
         division_width = width_b / dx
         y1 = int(division_height * py)
+        y2 = int(division_height * pey)
         x1 = int(division_width * px)
+        x2 = int(division_width * pex)
 
-        x[:, y1:y1 + int(division_height), x1:x1 + int(division_width)] = self.weight
+        x[:, y1:y2, x1:x2] = self.weight
 
         return x
 
@@ -61,8 +64,24 @@ class Script(scripts.Script):
 
         positions = []
         for position in raw_positions.split(','):
-            y, x = position.split(':')
-            positions.append((float(y), float(x)))
+            # proposal 1
+            # if '-' in position:
+            #     startpos, endpos = position.split('-')
+            #     start_y, start_x = startpos.split(':')
+            #     end_y, end_x = endpos.split(':')
+            #     positions.append((float(start_y), float(start_x), float(end_y), float(end_x)))
+            # else:
+            #     start_y, start_x = position.split(':')
+            #     positions.append((float(start_y), float(start_x), float(start_y)+1, float(start_x)+1))
+            
+            # proposal 2
+            ypart, xpart = position.split(':')
+            y1, y2 = [float(y) for y in ypart.split('-')] if '-' in ypart else (float(ypart), float(ypart)+1)
+            x1, x2 = [float(x) for x in xpart.split('-')] if '-' in xpart else (float(xpart), float(xpart)+1)
+            positions.append((float(y1), float(x1), float(y2), float(x2)))
+        
+            
+            
 
         weights = []
         for w in raw_weights.split(','):
