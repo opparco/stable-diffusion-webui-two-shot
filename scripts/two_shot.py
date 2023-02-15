@@ -1,4 +1,5 @@
 from typing import List, Dict, Optional, Tuple
+from dataclasses import dataclass
 
 import torch
 
@@ -8,32 +9,41 @@ import modules.scripts as scripts
 import gradio as gr
 # todo:
 from modules.script_callbacks import CFGDenoisedParams, on_cfg_denoised
-# from modules import processing
-# from torchvision import transforms
 
 from modules.processing import StableDiffusionProcessing
 
 
+@dataclass
+class Division:
+    y: float
+    x: float
+
+
+@dataclass
+class Position:
+    y: float
+    x: float
+    ey: float
+    ex: float
+
+
 class Filter:
 
-    def __init__(self, division: Tuple[float, float], position: Tuple[float, float, float, float], weight: float):
+    def __init__(self, division: Division, position: Position, weight: float):
         self.division = division
         self.position = position
         self.weight = weight
 
-    def create_tensor(self, num_channels: int, height_b: float, width_b: float) -> torch.Tensor:
+    def create_tensor(self, num_channels: int, height_b: int, width_b: int) -> torch.Tensor:
 
         x = torch.zeros(num_channels, height_b, width_b).to(devices.device)
 
-        dy, dx = self.division
-        py, px, pey, pex = self.position
-
-        division_height = height_b / dy
-        division_width = width_b / dx
-        y1 = int(division_height * py)
-        y2 = int(division_height * pey)
-        x1 = int(division_width * px)
-        x2 = int(division_width * pex)
+        division_height = height_b / self.division.y
+        division_width = width_b / self.division.x
+        y1 = int(division_height * self.position.y)
+        y2 = int(division_height * self.position.ey)
+        x1 = int(division_width * self.position.x)
+        x2 = int(division_width * self.position.ex)
 
         x[:, y1:y2, x1:x2] = self.weight
 
@@ -59,7 +69,7 @@ class Script(scripts.Script):
         divisions = []
         for division in raw_divisions.split(','):
             y, x = division.split(':')
-            divisions.append((float(y), float(x)))
+            divisions.append(Division(float(y), float(x)))
 
         def position_part(raw: str):
             nums = [float(num) for num in raw.split('-')]
@@ -73,7 +83,7 @@ class Script(scripts.Script):
             y, x = position.split(':')
             y1, y2 = position_part(y)
             x1, x2 = position_part(x)
-            positions.append((y1, x1, y2, x2))
+            positions.append(Position(y1, x1, y2, x2))
 
         weights = []
         for w in raw_weights.split(','):
