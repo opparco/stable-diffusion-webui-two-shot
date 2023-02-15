@@ -71,7 +71,7 @@ class Script(scripts.Script):
             y, x = division.split(':')
             divisions.append(Division(float(y), float(x)))
 
-        def position_part(raw: str):
+        def start_and_end_position(raw: str):
             nums = [float(num) for num in raw.split('-')]
             if len(nums) == 1:
                 return nums[0], nums[0] + 1.0
@@ -81,8 +81,8 @@ class Script(scripts.Script):
         positions = []
         for position in raw_positions.split(','):
             y, x = position.split(':')
-            y1, y2 = position_part(y)
-            x1, x2 = position_part(x)
+            y1, y2 = start_and_end_position(y)
+            x1, x2 = start_and_end_position(x)
             positions.append(Position(y1, x1, y2, x2))
 
         weights = []
