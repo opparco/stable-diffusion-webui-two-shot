@@ -47,18 +47,5 @@ outputs
 - end at step=4 https://imgur.com/a1kyvhX
 - end at step=0 https://imgur.com/yhGF7g8
 
-
-## Non-integers are also allowed
-![Example of float ratios](./screenshots/float_ratios_1.png)
-```
-landscape AND desert, (forest:-1) AND forest AND sky
-Negative prompt: low quality, girl
-Steps: 20, Sampler: Euler a, CFG scale: 7, Seed: 1364356949, Size: 1280x512, Model hash: abcaf14e5a, Model: anything-v3-full, Latent Couple: "divisions=1:1,1:2.5,1:1.667,1.5:1 positions=0:0,0:0,0:0.667,0:0 weights=0.5,1,1,0.8 end at step=20"
-```
-![A landscape with forest and desert](./screenshots/landscape_float_1.png)
-
-
-
-
 ## Credits
 - two shot diffusion.ipynb https://colab.research.google.com/drive/1UdElpQfKFjY5luch9v_LlmSdH7AmeiDe?usp=sharing
