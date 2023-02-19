@@ -2,12 +2,6 @@
 This extension is an extension of the built-in Composable Diffusion.
 This allows you to determine the region of the latent space that reflects your subprompts.
 
-## Prerequisite
-This extension need to apply cfg_denoised_callback-ea9bd9fc.patch (as of Feb 5, 2023 origin/HEAD commit ea9bd9fc).
-```
-git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/cfg_denoised_callback-ea9bd9fc.patch
-```
-
 ## How to use
 ![20230213.png](./screenshots/20230213.png)
 
@@ -46,6 +40,12 @@ outputs
 - end at step=20 https://imgur.com/OEaRFgh
 - end at step=4 https://imgur.com/a1kyvhX
 - end at step=0 https://imgur.com/yhGF7g8
+
+## Old prerequisite
+This extension need to apply cfg_denoised_callback-ea9bd9fc.patch (as of Feb 5, 2023 origin/HEAD commit ea9bd9fc).
+```
+git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/cfg_denoised_callback-ea9bd9fc.patch
+```
 
 ## Credits
 - two shot diffusion.ipynb https://colab.research.google.com/drive/1UdElpQfKFjY5luch9v_LlmSdH7AmeiDe?usp=sharing
