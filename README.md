@@ -3,7 +3,9 @@ This extension is an extension of the built-in Composable Diffusion.
 This allows you to determine the region of the latent space that reflects your subprompts.
 
 ## How to use
+![20230303.png](./screenshots/20230303.png)
 ![20230213.png](./screenshots/20230213.png)
+
 
 ### Enabled
 The effect of Latent Couple appears only when Enabled is checked.
@@ -51,6 +53,11 @@ git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/cfg_den
 ```
 git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/0001-Adding-after_ui_callback-for-scripts.patch
 ```
+
+## Issues
+- The extension's mask color sketching function does not work well with chrome(extreme stuttering) due to gradio's Image component bug, firefox is recommended.
+- Drawing area with more than one stroke may lead to black edges in output mask, thus it is recommended to finish one color mask with one stroke. This is caused by brush edge blurring. Option Denoise Mask can be used to dampen this effect.
+
 
 ## Credits
 - two shot diffusion.ipynb https://colab.research.google.com/drive/1UdElpQfKFjY5luch9v_LlmSdH7AmeiDe?usp=sharing
