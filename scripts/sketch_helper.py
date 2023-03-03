@@ -1,10 +1,6 @@
 import numpy as np
 import cv2
 import base64
-from PIL import Image
-from skimage.color import rgb2lab
-from skimage.color import lab2rgb
-from sklearn.cluster import KMeans
 
     
 def count_high_freq_colors(image):

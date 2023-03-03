@@ -3,8 +3,7 @@ from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
 
 import torch
-from PIL import Image
-from io import BytesIO
+
 from scripts.sketch_helper import get_high_freq_colors, color_quantization, create_binary_matrix_base64, create_binary_mask
 import numpy as np
 import cv2
@@ -13,7 +12,7 @@ from modules import devices
 
 import modules.scripts as scripts
 import gradio as gr
-# todo:
+
 from modules.script_callbacks import CFGDenoisedParams, on_cfg_denoised
 
 from modules.processing import StableDiffusionProcessing
