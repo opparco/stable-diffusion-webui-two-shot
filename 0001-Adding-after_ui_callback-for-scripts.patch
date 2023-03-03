@@ -1,0 +1,72 @@
+From 0a40ba10c0b8864ee61a168ad24e1228c6a6615b Mon Sep 17 00:00:00 2001
+From: Ashen <git123@gmail.com>
+Date: Fri, 3 Mar 2023 12:34:28 -0800
+Subject: [PATCH] Adding after_ui_callback for scripts
+
+---
+ modules/script_callbacks.py | 16 ++++++++++++++++
+ modules/ui.py               |  3 +++
+ 2 files changed, 19 insertions(+)
+
+diff --git a/modules/script_callbacks.py b/modules/script_callbacks.py
+index edd0e2a7..9ac32e2a 100644
+--- a/modules/script_callbacks.py
++++ b/modules/script_callbacks.py
+@@ -87,6 +87,7 @@ callback_map = dict(
+     callbacks_infotext_pasted=[],
+     callbacks_script_unloaded=[],
+     callbacks_before_ui=[],
++    callbacks_after_ui=[],
+ )
+ 
+ 
+@@ -219,6 +220,14 @@ def before_ui_callback():
+             report_exception(c, 'before_ui')
+ 
+ 
++def after_ui_callback():
++    for c in reversed(callback_map['callbacks_after_ui']):
++        try:
++            c.callback()
++        except Exception:
++            report_exception(c, 'after_ui')
++
++
+ def add_callback(callbacks, fun):
+     stack = [x for x in inspect.stack() if x.filename != __file__]
+     filename = stack[0].filename if len(stack) > 0 else 'unknown file'
+@@ -357,3 +366,10 @@ def on_before_ui(callback):
+     """register a function to be called before the UI is created."""
+ 
+     add_callback(callback_map['callbacks_before_ui'], callback)
++
++
++def on_after_ui(callback):
++    """register a function to be called after the UI is created."""
++
++    add_callback(callback_map['callbacks_after_ui'], callback)
++
+diff --git a/modules/ui.py b/modules/ui.py
+index 0516c643..6203cd1f 100644
+--- a/modules/ui.py
++++ b/modules/ui.py
+@@ -651,6 +651,7 @@ def create_ui():
+             negative_token_button.click(fn=wrap_queued_call(update_token_counter), inputs=[txt2img_negative_prompt, steps], outputs=[negative_token_counter])
+ 
+             ui_extra_networks.setup_ui(extra_networks_ui, txt2img_gallery)
++            modules.script_callbacks.after_ui_callback()
+ 
+     modules.scripts.scripts_current = modules.scripts.scripts_img2img
+     modules.scripts.scripts_img2img.initialize_scripts(is_img2img=True)
+@@ -969,6 +970,8 @@ def create_ui():
+                 paste_button=img2img_paste, tabname="img2img", source_text_component=img2img_prompt, source_image_component=None,
+             ))
+ 
++        modules.script_callbacks.after_ui_callback()
++
+     modules.scripts.scripts_current = None
+ 
+     with gr.Blocks(analytics_enabled=False) as extras_interface:
+-- 
+2.39.2
+

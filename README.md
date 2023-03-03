@@ -47,5 +47,10 @@ This extension need to apply cfg_denoised_callback-ea9bd9fc.patch (as of Feb 5, 
 git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/cfg_denoised_callback-ea9bd9fc.patch
 ```
 
+## prerequisite for prompt pasting
+```
+git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/0001-Adding-after_ui_callback-for-scripts.patch
+```
+
 ## Credits
 - two shot diffusion.ipynb https://colab.research.google.com/drive/1UdElpQfKFjY5luch9v_LlmSdH7AmeiDe?usp=sharing

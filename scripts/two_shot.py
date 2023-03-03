@@ -13,7 +13,7 @@ from modules import devices
 import modules.scripts as scripts
 import gradio as gr
 
-from modules.script_callbacks import CFGDenoisedParams, on_cfg_denoised
+from modules.script_callbacks import CFGDenoisedParams, on_cfg_denoised, on_after_ui
 
 from modules.processing import StableDiffusionProcessing
 
@@ -117,6 +117,7 @@ class MaskFilter:
 class Script(scripts.Script):
 
     def __init__(self):
+        self.ui_root = None
         self.num_batches: int = 0
         self.end_at_step: int = 20
         self.filters: List[Filter] = []
@@ -124,6 +125,23 @@ class Script(scripts.Script):
         self.selected_twoshot_tab = 0
         self.ndmasks = []
         self.area_colors = []
+        self.prompt_update_button = None
+        self.source_prompts = []
+        self.prompt_paste_initialized = False
+        on_after_ui(self.on_after_ui)
+
+    def on_after_ui(self):
+        if self.prompt_paste_initialized:
+            return
+        def paste_prompt(*input_prompts):
+            finalprompts = input_prompts[:len(self.area_colors)]
+            final_prompt_str = '\nAND '.join(finalprompts)
+            return final_prompt_str
+
+        prompt_target = self.ui_root.parent.parent.parent.parent.parent.children[0].children[0].children[0].children[0].children[0].children[0].children[0]
+        self.prompt_update_button.click(fn=paste_prompt, inputs=self.source_prompts, outputs=prompt_target)
+
+        self.prompt_paste_initialized = True
 
     def title(self):
         return "Latent Couple extension"
@@ -247,12 +265,12 @@ class Script(scripts.Script):
             area_colors = np.delete(sketch_colors, edge_color_correction_arr, axis=0)
             for edge_color_idx in edge_color_correction_arr:
                 edge_color = sketch_colors[edge_color_idx]
-                # find the nearest area color
+                # find the nearest area_color
                 color_distances = np.linalg.norm(area_colors - edge_color, axis=1)
                 nearest_index = np.argmin(color_distances)
                 nearest_color = area_colors[nearest_index]
                 edge_fix_dict[edge_color_idx] = nearest_color
-                # replace edge color with the nearest area color
+                # replace edge color with the nearest area_color
                 cur_color_mask = np.all(im2arr == edge_color, axis=2)
                 im2arr[cur_color_mask] = nearest_color
 
@@ -338,7 +356,7 @@ class Script(scripts.Script):
 
         cur_weight_sliders = []
 
-        with gr.Group():
+        with gr.Group() as group_two_shot_root:
             binary_matrixes = gr.State([])
             with gr.Accordion("Latent Couple", open=False):
                 enabled = gr.Checkbox(value=False, label="Enabled")
@@ -393,6 +411,8 @@ class Script(scripts.Script):
                                          queue=False)
 
                         button_update.click(fn=update_mask_filters, inputs=[alpha_blend, general_prompt, *cur_weight_sliders, *prompts], outputs=[final_prompt, alpha_mask_row, alpha_color, *colors])
+                        self.prompt_update_button = button_update
+                        self.source_prompts = [general_prompt, *prompts]
                         with gr.Column():
                             canvas_width = gr.Slider(label="Canvas Width", minimum=256, maximum=1024, value=512, step=64)
                             canvas_height = gr.Slider(label="Canvas Height", minimum=256, maximum=1024, value=512, step=64)
@@ -431,6 +451,8 @@ class Script(scripts.Script):
                             inputs=[],
                             outputs=[],
                     )
+
+        self.ui_root = group_two_shot_root
 
         self.infotext_fields = [
             (extra_generation_params, "Latent Couple")
