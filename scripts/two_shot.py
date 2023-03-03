@@ -128,6 +128,7 @@ class Script(scripts.Script):
         self.prompt_update_button = None
         self.source_prompts = []
         self.prompt_paste_initialized = False
+        self.mask_denoise = False
         on_after_ui(self.on_after_ui)
 
     def on_after_ui(self):
@@ -260,23 +261,23 @@ class Script(scripts.Script):
             edge_fix_dict = {}
             # TODO:for every non area color pixel in img_arr, find the nearest area color pixel and replace it with that color
 
-
-
             area_colors = np.delete(sketch_colors, edge_color_correction_arr, axis=0)
-            for edge_color_idx in edge_color_correction_arr:
-                edge_color = sketch_colors[edge_color_idx]
-                # find the nearest area_color
-                color_distances = np.linalg.norm(area_colors - edge_color, axis=1)
-                nearest_index = np.argmin(color_distances)
-                nearest_color = area_colors[nearest_index]
-                edge_fix_dict[edge_color_idx] = nearest_color
-                # replace edge color with the nearest area_color
-                cur_color_mask = np.all(im2arr == edge_color, axis=2)
-                im2arr[cur_color_mask] = nearest_color
+            if self.mask_denoise:
+                for edge_color_idx in edge_color_correction_arr:
+                    edge_color = sketch_colors[edge_color_idx]
+                    # find the nearest area_color
 
-            # recalculate area colors
-            sketch_colors, color_counts = np.unique(im2arr.reshape(-1, im2arr.shape[2]), axis=0, return_counts=True)
-            area_colors = sketch_colors
+                    color_distances = np.linalg.norm(area_colors - edge_color, axis=1)
+                    nearest_index = np.argmin(color_distances)
+                    nearest_color = area_colors[nearest_index]
+                    edge_fix_dict[edge_color_idx] = nearest_color
+                    # replace edge color with the nearest area_color
+                    cur_color_mask = np.all(im2arr == edge_color, axis=2)
+                    im2arr[cur_color_mask] = nearest_color
+
+                # recalculate area colors
+                sketch_colors, color_counts = np.unique(im2arr.reshape(-1, im2arr.shape[2]), axis=0, return_counts=True)
+                area_colors = sketch_colors
 
             # create binary matrix for each area_color
             area_color_maps = []
@@ -368,6 +369,12 @@ class Script(scripts.Script):
                         # model = gr.Textbox(label="The id of any Hugging Face model in the diffusers format",
                         #                    value="stabilityai/stable-diffusion-2-1-base",
                         #                    visible=False if is_shared_ui else True)
+                        mask_denoise_checkbox = gr.Checkbox(value=False, label="Denoise Mask")
+
+                        def update_mask_denoise_flag(flag):
+                            self.mask_denoise = flag
+
+                        mask_denoise_checkbox.change(fn=update_mask_denoise_flag, inputs=[mask_denoise_checkbox], outputs=None)
                         canvas_image = gr.Image(source='upload', mirror_webcam=False, type='numpy', tool='color-sketch',
                                                 elem_id='twoshot_canvas_sketch', interactive=True).style(height=400)
                         # aspect = gr.Radio(["square", "horizontal", "vertical"], value="square", label="Aspect Ratio",
