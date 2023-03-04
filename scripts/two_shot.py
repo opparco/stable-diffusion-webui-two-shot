@@ -177,7 +177,7 @@ class Script(scripts.Script):
 
         # todo: assert len
 
-        return [Filter(division, position, weight) for division, position, weight in zip(divisions, positions, weights)]
+        return [RectFilter(division, position, weight) for division, position, weight in zip(divisions, positions, weights)]
 
     def create_mask_filters_from_ui_params(self, raw_divisions: str, raw_positions: str, raw_weights: str):
 
@@ -437,7 +437,7 @@ class Script(scripts.Script):
                             positions = gr.Textbox(label="Positions", elem_id=f"cd_{id_part}_positions", value="0:0,0:0,0:1")
                         with gr.Row():
                             weights = gr.Textbox(label="Weights", elem_id=f"cd_{id_part}_weights", value="0.2,0.8,0.8")
-                            end_at_step = gr.Slider(minimum=0, maximum=150, step=1, label="end at this step", elem_id=f"cd_{id_part}_end_at_this_step", value=20)
+                            end_at_step = gr.Slider(minimum=0, maximum=150, step=1, label="end at this step", elem_id=f"cd_{id_part}_end_at_this_step", value=150)
 
                         visualize_button = gr.Button(value="Visualize")
                         visual_regions = gr.Gallery(label="Regions").style(grid=(4, 4, 4, 8), height="auto")
