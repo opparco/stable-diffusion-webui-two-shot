@@ -51,9 +51,19 @@ in webui root directory, run
 git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/0001-Adding-after_ui_callback-for-scripts.patch
 ```
 ## Prerequisite for gradio Image and Sketch component bug fix
-in extensions/stable-diffusion-webui-two-shot directory, run
+Activate your venv in webui root directory
+
+For Windows, in cmd
 ```
-pip install --force-reinstall --no-deps gradio-3.16.2-py3-none-any.whl
+venv\Scripts\activate.bat
+```
+For Linux
+```
+source venv/bin/activate
+```
+Then, install wheel distribution with bugfix applied
+```
+pip install --force-reinstall --no-deps extensions/stable-diffusion-webui-two-shot/gradio-3.16.2-py3-none-any.whl
 ```
 For bugfix related modifications, see https://github.com/ashen-sensored/gradio/tree/3.16.2
 
