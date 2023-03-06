@@ -43,19 +43,23 @@ outputs
 - end at step=4 https://imgur.com/a1kyvhX
 - end at step=0 https://imgur.com/yhGF7g8
 
-## Old prerequisite
-This extension need to apply cfg_denoised_callback-ea9bd9fc.patch (as of Feb 5, 2023 origin/HEAD commit ea9bd9fc).
-```
-git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/cfg_denoised_callback-ea9bd9fc.patch
-```
 
-## prerequisite for prompt pasting
+## Prerequisite for prompt pasting
+with stable-diffusion-webui at commit [0cc0ee1](https://github.com/AUTOMATIC1111/stable-diffusion-webui/commit/0cc0ee1bcb4c24a8c9715f66cede06601bfc00c8)
+in webui root directory, run
 ```
 git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/0001-Adding-after_ui_callback-for-scripts.patch
 ```
+## Prerequisite for gradio Image and Sketch component bug fix
+in extensions/stable-diffusion-webui-two-shot directory, run
+```
+pip install --force-reinstall --no-deps gradio-3.16.2-py3-none-any.whl
+```
+For bugfix related modifications, see https://github.com/ashen-sensored/gradio/tree/3.16.2
+
 
 ## Issues
-- The extension's mask color sketching function does not work well with chrome(extreme stuttering) due to gradio's Image component bug, firefox is recommended.
+- ~~The extension's mask color sketching function does not work well with chrome(extreme stuttering) due to gradio's Image component bug.~~ See prerequisite above.
 - Drawing area with more than one stroke may lead to black edges in output mask, thus it is recommended to finish one color mask with one stroke. This is caused by brush edge blurring. Option Denoise Mask can be used to dampen this effect.
 
 
