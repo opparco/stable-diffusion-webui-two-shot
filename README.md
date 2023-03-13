@@ -44,12 +44,7 @@ outputs
 - end at step=0 https://imgur.com/yhGF7g8
 
 
-## Prerequisite for prompt pasting
-with stable-diffusion-webui at commit [0cc0ee1](https://github.com/AUTOMATIC1111/stable-diffusion-webui/commit/0cc0ee1bcb4c24a8c9715f66cede06601bfc00c8)
-in webui root directory, run
-```
-git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/0001-Adding-after_ui_callback-for-scripts.patch
-```
+## ~~Prerequisite for prompt pasting~~
 ## Prerequisite for gradio Image and Sketch component bug fix
 Activate your venv in webui root directory
 

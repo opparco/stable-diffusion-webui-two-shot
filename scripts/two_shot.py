@@ -8,12 +8,12 @@ from scripts.sketch_helper import get_high_freq_colors, color_quantization, crea
 import numpy as np
 import cv2
 
-from modules import devices
+from modules import devices, script_callbacks
 
 import modules.scripts as scripts
 import gradio as gr
 
-from modules.script_callbacks import CFGDenoisedParams, on_cfg_denoised, on_after_ui
+from modules.script_callbacks import CFGDenoisedParams, on_cfg_denoised
 
 from modules.processing import StableDiffusionProcessing
 
@@ -112,6 +112,39 @@ class MaskFilter:
         return mask
 
 
+class PastePromptTextboxTracker:
+    def __init__(self):
+        self.scripts = []
+        return
+
+    def set_script(self, script):
+        self.scripts.append(script)
+
+    def on_after_component_callback(self, component, **_kwargs):
+
+        if not self.scripts:
+            return
+        if type(component) is gr.State:
+            return
+
+        script = None
+        if type(component) is gr.Textbox and component.elem_id == 'txt2img_prompt':
+            # select corresponding script
+            script = next(x for x in self.scripts if x.is_txt2img)
+            self.scripts.remove(script)
+
+        if type(component) is gr.Textbox and component.elem_id == 'img2img_prompt':
+            # select corresponding script
+            script = next(x for x in self.scripts if x.is_img2img)
+            self.scripts.remove(script)
+
+        if script is None:
+            return
+
+        script.target_paste_prompt = component
+
+
+prompt_textbox_tracker = PastePromptTextboxTracker()
 
 
 class Script(scripts.Script):
@@ -125,24 +158,10 @@ class Script(scripts.Script):
         self.selected_twoshot_tab = 0
         self.ndmasks = []
         self.area_colors = []
-        self.prompt_update_button = None
-        self.source_prompts = []
-        self.prompt_paste_initialized = False
         self.mask_denoise = False
-        on_after_ui(self.on_after_ui)
+        prompt_textbox_tracker.set_script(self)
+        self.target_paste_prompt = None
 
-    def on_after_ui(self):
-        if self.prompt_paste_initialized:
-            return
-        def paste_prompt(*input_prompts):
-            finalprompts = input_prompts[:len(self.area_colors)]
-            final_prompt_str = '\nAND '.join(finalprompts)
-            return final_prompt_str
-
-        prompt_target = self.ui_root.parent.parent.parent.parent.parent.children[0].children[0].children[0].children[0].children[0].children[0].children[0]
-        self.prompt_update_button.click(fn=paste_prompt, inputs=self.source_prompts, outputs=prompt_target)
-
-        self.prompt_paste_initialized = True
 
     def title(self):
         return "Latent Couple extension"
@@ -418,8 +437,17 @@ class Script(scripts.Script):
                                          queue=False)
 
                         button_update.click(fn=update_mask_filters, inputs=[alpha_blend, general_prompt, *cur_weight_sliders, *prompts], outputs=[final_prompt, alpha_mask_row, alpha_color, *colors])
-                        self.prompt_update_button = button_update
-                        self.source_prompts = [general_prompt, *prompts]
+
+                        def paste_prompt(*input_prompts):
+                            final_prompts = input_prompts[:len(self.area_colors)]
+                            final_prompt_str = '\nAND '.join(final_prompts)
+                            return final_prompt_str
+                        source_prompts = [general_prompt, *prompts]
+                        button_update.click(fn=paste_prompt, inputs=source_prompts,
+                                            outputs=self.target_paste_prompt)
+
+
+
                         with gr.Column():
                             canvas_width = gr.Slider(label="Canvas Width", minimum=256, maximum=1024, value=512, step=64)
                             canvas_height = gr.Slider(label="Canvas Height", minimum=256, maximum=1024, value=512, step=64)
@@ -563,3 +591,4 @@ class Script(scripts.Script):
         return
 
 
+script_callbacks.on_after_component(prompt_textbox_tracker.on_after_component_callback)
