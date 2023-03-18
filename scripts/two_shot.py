@@ -113,6 +113,12 @@ class Script(scripts.Script):
 
         return raw_params.get('divisions', '1:1,1:2,1:2'), raw_params.get('positions', '0:0,0:0,0:1'), raw_params.get('weights', '0.2,0.8,0.8'), int(raw_params.get('step', '20'))
 
+    def do_copy(self, raw_divisions: str, raw_positions: str, raw_weights: str, raw_end_at_step: int):
+        #
+        # copy "Latent Couple" extra_generation_params to textbox
+        #
+        return f"divisions={raw_divisions} positions={raw_positions} weights={raw_weights} end at step={raw_end_at_step}"
+
     def ui(self, is_img2img):
         id_part = "img2img" if is_img2img else "txt2img"
 
@@ -132,9 +138,12 @@ class Script(scripts.Script):
                 visualize_button.click(fn=self.do_visualize, inputs=[divisions, positions, weights], outputs=[visual_regions])
 
                 extra_generation_params = gr.Textbox(label="Extra generation params")
-                apply_button = gr.Button(value="Apply")
+                with gr.Column():
+                    apply_button = gr.Button(value="Apply")
+                    copy_button = gr.Button(value="Copy")
 
                 apply_button.click(fn=self.do_apply, inputs=[extra_generation_params], outputs=[divisions, positions, weights, end_at_step])
+                copy_button.click(fn=self.do_copy, inputs=[divisions, positions, weights, end_at_step], outputs=[extra_generation_params])
 
         self.infotext_fields = [
             (extra_generation_params, "Latent Couple")
