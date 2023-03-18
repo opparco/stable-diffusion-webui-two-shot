@@ -139,6 +139,7 @@ class Script(scripts.Script):
         self.infotext_fields = [
             (extra_generation_params, "Latent Couple")
         ]
+        self.paste_field_names = ["Latent Couple"]
         return enabled, divisions, positions, weights, end_at_step
 
     def denoised_callback(self, params: CFGDenoisedParams):
