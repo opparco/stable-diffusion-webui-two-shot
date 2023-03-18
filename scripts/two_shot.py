@@ -138,8 +138,8 @@ class Script(scripts.Script):
                 visualize_button.click(fn=self.do_visualize, inputs=[divisions, positions, weights], outputs=[visual_regions])
 
                 extra_generation_params = gr.Textbox(label="Extra generation params")
-                with gr.Column():
-                    apply_button = gr.Button(value="Apply")
+                with gr.Row():
+                    apply_button = gr.Button(value="Apply", variant="primary")
                     copy_button = gr.Button(value="Copy")
 
                 apply_button.click(fn=self.do_apply, inputs=[extra_generation_params], outputs=[divisions, positions, weights, end_at_step])
