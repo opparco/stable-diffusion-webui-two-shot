@@ -23,7 +23,7 @@
     position: absolute;
 }
 
-.output-html{
+#script_twoshot_tabs .output-html{
     display: flex;
     justify-content: center;
     align-items: center;
