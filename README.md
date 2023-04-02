@@ -68,7 +68,8 @@ For bugfix related modifications, see https://github.com/ashen-sensored/gradio/t
 
 
 ## Issues
-- ~~The extension's mask color sketching function does not work well with chrome(extreme stuttering) due to gradio's Image component bug.~~ See prerequisite above. This fix is no longer suitable for latest webui version at 22bcc7be, with gradio dependency upgraded to 3.23. Please keep the browser scaling at 100% to avoid the bug.
+- ~~The extension's mask color sketching function does not work well with chrome(extreme stuttering) due to gradio's Image component bug.~~ Please keep the browser scaling at 100% while creating blank canvas to avoid the bug. 
+See prerequisite above. The fix is no longer suitable for latest webui version at 22bcc7be, with gradio dependency upgraded to 3.23. 
 
 
 ## Credits

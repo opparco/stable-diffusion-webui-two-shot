@@ -28,3 +28,9 @@
     justify-content: center;
     align-items: center;
 }
+
+#script_twoshot_tabs .gradio-image > div.fixed-height, #script_twoshot_tabs .gradio-image > div.fixed-height img {
+    height: 480px !important;
+    max-height: 480px !important;
+    min-height: 480px !important;
+}

@@ -395,7 +395,7 @@ class Script(scripts.Script):
 
                         mask_denoise_checkbox.change(fn=update_mask_denoise_flag, inputs=[mask_denoise_checkbox], outputs=None)
                         canvas_image = gr.Image(source='upload', mirror_webcam=False, type='numpy', tool='color-sketch',
-                                                elem_id='twoshot_canvas_sketch', interactive=True).style(height=400)
+                                                elem_id='twoshot_canvas_sketch', interactive=True).style(height=480)
                         # aspect = gr.Radio(["square", "horizontal", "vertical"], value="square", label="Aspect Ratio",
                         #                   visible=False if is_shared_ui else True)
                         button_run = gr.Button("I've finished my sketch", elem_id="main_button", interactive=True)
