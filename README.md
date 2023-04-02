@@ -45,7 +45,11 @@ outputs
 
 
 ## ~~Prerequisite for prompt pasting~~
-## Prerequisite for gradio Image and Sketch component bug fix
+## ~~Prerequisite for gradio Image and Sketch component bug fix~~
+This fix is no longer suitable for latest webui commit at 22bcc7be, with gradio dependency upgraded to 3.23. 
+
+I'll keep the fix here for people still using older versions of webui.
+
 Activate your venv in webui root directory
 
 For Windows, in cmd
@@ -64,8 +68,7 @@ For bugfix related modifications, see https://github.com/ashen-sensored/gradio/t
 
 
 ## Issues
-- ~~The extension's mask color sketching function does not work well with chrome(extreme stuttering) due to gradio's Image component bug.~~ See prerequisite above.
-- Drawing area with more than one stroke may lead to black edges in output mask, thus it is recommended to finish one color mask with one stroke. This is caused by brush edge blurring. Option Denoise Mask can be used to dampen this effect.
+- ~~The extension's mask color sketching function does not work well with chrome(extreme stuttering) due to gradio's Image component bug.~~ See prerequisite above. This fix is no longer suitable for latest webui version at 22bcc7be, with gradio dependency upgraded to 3.23. Please keep the browser scaling at 100% to avoid the bug.
 
 
 ## Credits
