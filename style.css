@@ -1,0 +1,36 @@
+
+#twoshot_canvas_sketch, #twoshot_canvas_sketch > .h-60, #twoshot_canvas_sketch > .h-60 > div, #twoshot_canvas_sketch > .h-60 > div > img
+{
+    height: 480px !important;
+    max-height: 480px !important;
+    /*min-height: 480px !important;*/
+}
+
+#color-bg > .gr-box, #color-bg > .gr-box > .transition, #color-bg > .gr-box > .transition > .output-html
+{
+    height: 100%;
+}
+
+#color-bg{
+    max-height: 110px;
+}
+
+#alpha_mask{
+    max-height: 110px;
+}
+
+#general_mask_label_span{
+    position: absolute;
+}
+
+#script_twoshot_tabs .output-html{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#script_twoshot_tabs .gradio-image > div.fixed-height, #script_twoshot_tabs .gradio-image > div.fixed-height img {
+    height: 480px !important;
+    max-height: 480px !important;
+    min-height: 480px !important;
+}

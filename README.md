@@ -3,7 +3,9 @@ This extension is an extension of the built-in Composable Diffusion.
 This allows you to determine the region of the latent space that reflects your subprompts.
 
 ## How to use
+![20230303.png](./screenshots/20230303.png)
 ![20230213.png](./screenshots/20230213.png)
+
 
 ### Enabled
 The effect of Latent Couple appears only when Enabled is checked.
@@ -41,11 +43,34 @@ outputs
 - end at step=4 https://imgur.com/a1kyvhX
 - end at step=0 https://imgur.com/yhGF7g8
 
-## Old prerequisite
-This extension need to apply cfg_denoised_callback-ea9bd9fc.patch (as of Feb 5, 2023 origin/HEAD commit ea9bd9fc).
+
+## ~~Prerequisite for prompt pasting~~
+## ~~Prerequisite for gradio Image and Sketch component bug fix~~
+This fix is no longer suitable for latest webui commit at 22bcc7be, with gradio dependency upgraded to 3.23. 
+
+I'll keep the fix here for people still using older versions of webui.
+
+Activate your venv in webui root directory
+
+For Windows, in cmd
 ```
-git apply --ignore-whitespace extensions/stable-diffusion-webui-two-shot/cfg_denoised_callback-ea9bd9fc.patch
+venv\Scripts\activate.bat
 ```
+For Linux
+```
+source venv/bin/activate
+```
+Then, install wheel distribution with bugfix applied
+```
+pip install --force-reinstall --no-deps extensions/stable-diffusion-webui-two-shot/gradio-3.16.2-py3-none-any.whl
+```
+For bugfix related modifications, see https://github.com/ashen-sensored/gradio/tree/3.16.2
+
+
+## Issues
+- ~~The extension's mask color sketching function does not work well with chrome(extreme stuttering) due to gradio's Image component bug.~~ Please keep the browser scaling at 100% while creating blank canvas to avoid the bug. 
+See prerequisite above. The fix is no longer suitable for latest webui version at 22bcc7be, with gradio dependency upgraded to 3.23. 
+
 
 ## Credits
 - two shot diffusion.ipynb https://colab.research.google.com/drive/1UdElpQfKFjY5luch9v_LlmSdH7AmeiDe?usp=sharing
